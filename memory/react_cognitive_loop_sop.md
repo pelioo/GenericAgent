@@ -128,15 +128,19 @@ Emotional + Meta-Analysis
    - 哪里做得好？
    - 哪里可以改进？
    - 下次遇到类似任务如何优化？
-2. 检查用户是否还有其他潜在需求
-3. 主动建议：如果发现用户可能需要相关信息，主动提醒
+2. **[Self-Improving增强]** 检查corrections.md是否有本轮相关纠正 → 记录
+3. **[Self-Improving增强]** 复杂任务(≥3轮)生成反思条目 → 写入self_improving_reflections.md
+4. 检查用户是否还有其他潜在需求
+5. 主动建议：如果发现用户可能需要相关信息，主动提醒
 
 **输出**：
 ```json
 {
   "reflection": "反思内容",
   "improvement": "下次改进点",
-  "proactive_suggestions": ["建议1", "建议2"]
+  "proactive_suggestions": ["建议1", "建议2"],
+  "correction_tracked": true/false,
+  "reflection_logged": true/false
 }
 ```
 
