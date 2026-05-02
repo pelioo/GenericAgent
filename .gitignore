@@ -111,4 +111,10 @@ python/
 ~/
 
 # 包含的 SOP 文件 
+
+## 无头浏览器 sop 
 !memory/browser_operation_sop.md
+!memory/headless_browser_sop.md
+!memory/headless_browser_utils.py
+!memory/multi_search_engine.py
+!memory/advanced_funcs.py
