@@ -105,3 +105,10 @@ reflect/*
 
 # Universal: never track __pycache__ anywhere
 **/__pycache__/
+
+# 排除文件夹 
+.snapshots/
+python/
+
+# 包含的 SOP 文件 
+!memory/browser_operation_sop.md
