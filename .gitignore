@@ -118,3 +118,5 @@ python/
 !memory/headless_browser_utils.py
 !memory/multi_search_engine.py
 !memory/advanced_funcs.py
+
+!memory/react_cognitive_loop_sop.md
