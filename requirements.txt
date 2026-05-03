@@ -1,0 +1,34 @@
+# GenericAgent — requirements.txt（完整依赖，安装即用）
+requests>=2.28
+beautifulsoup4>=4.12
+bottle>=0.12
+simple-websocket-server>=0.4
+streamlit>=1.28
+pywebview>=4.0
+python-telegram-bot>=20.0
+qq-botpy>=1.0
+pycryptodome>=3.19
+qrcode>=7.4
+lark-oapi>=1.0
+wecom-aibot-sdk>=1.0
+dingtalk-stream>=0.20
+pywin32>=306
+pygetwindow>=0.0.9
+numpy>=1.24
+Pillow>=10.0
+ultralytics>=8.0
+pytest>=7.0
+ruff>=0.1
+langfuse>=2.0
+# 自主学习R01补充依赖
+yara-python>=1.7  # Windows需此包(含libyara.dll)，非独立yara
+rapidocr-onnxruntime>=1.3
+uiautomator2>=2.16.14  # Android UI自动化测试库
+# 代码分析补充依赖
+markdown>=3.0
+PySide6-Essentials>=6.0
+opencv-python>=4.0  # 图像视觉处理(cv2)，用于UI元素定位
+urllib3>=2.0  # HTTP客户端，requests的依赖
+# Web获取增强依赖
+playwright>=1.59.0  # 无头浏览器，支持JS渲染的快速网页获取
+# ⚠️ 安装playwright后需额外执行: python -m playwright install chromium
