@@ -29,10 +29,11 @@
   }},
   {"type": "function", "function": {
     "name": "file_write",
-    "description": "Create/overwrite/append files. HUGE edits ONLY. Content must in <file_content>...</file_content> in reply body BEFORE the file_write call (not args). Supports {{file:path:startLine:endLine}}, auto-expanded",
+    "description": "Create/overwrite/append files. HUGE edits ONLY. Content can be: (1) in args.content param (recommended for short text), OR (2) in <file_content> tags in reply body (for large files). Supports {{file:path:startLine:endLine}}, auto-expanded",
     "parameters": {"type": "object", "properties": {
       "path": {"type": "string", "description": "File path"},
-      "mode": {"type": "string", "enum": ["overwrite", "append", "prepend"], "description": "Write mode", "default": "overwrite"}}}
+      "mode": {"type": "string", "enum": ["overwrite", "append", "prepend"], "description": "Write mode", "default": "overwrite"},
+      "content": {"type": "string", "description": "[Optional] File content. If not provided, will extract from <file_content> tags in reply body"}}}
   }},
   {"type": "function", "function": {
     "name": "web_scan",

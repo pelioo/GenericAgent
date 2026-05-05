@@ -367,7 +367,8 @@ class GenericAgentHandler(BaseHandler):
     
     def do_file_write(self, args, response):
         '''用于对整个文件的大量处理，精细修改要用file_patch。
-        需要将要写入的内容放在<file_content>标签内，或者放在代码块中'''
+        内容可以：(1) 通过 args.content 参数传递（推荐短文本），或
+                 (2) 放在回复正文的<file_content>标签内（推荐大文件）'''
         path = self._get_abs_path(args.get("path", ""))
         mode = args.get("mode", "overwrite")  # overwrite/append/prepend
         action_str = {"prepend": "Prepending to", "append": "Appending to"}.get(mode, "Overwriting")
@@ -380,15 +381,32 @@ class GenericAgentHandler(BaseHandler):
             if blocks: return blocks[-1].strip()
             return None
         
-        blocks = extract_robust_content(response.content)
-        if not blocks:
-            yield f"[Status] ❌ 失败: 未在回复中找到<file_content>代码块内容\n"
-            return StepOutcome({"status": "error", "msg": "No content found. Put content inside <file_content>...</file_content> tags in your reply body before call file_write."}, next_prompt="\n")
+        # ✅ 方案A: 优先从 args 获取内容，fallback 到正文提取
+        new_content = args.get("content") or args.get("file_content")
+        if not new_content:
+            new_content = extract_robust_content(response.content)
+        
+        if not new_content:
+            yield f"[Status] ❌ 失败: 未找到内容（需要 args.content 或 <file_content> 标签）\n"
+            return StepOutcome({"status": "error", "msg": "No content found. Put content in args.content parameter or <file_content> tags in reply body."}, next_prompt="\n")
+        
+        # ✅ Bug修复2: 单独捕获 expand_file_refs 异常
         try:
-            new_content = expand_file_refs(blocks, base_dir=self.cwd)
+            new_content = expand_file_refs(new_content, base_dir=self.cwd)
+        except ValueError as e:
+            yield f"[Status] ❌ 引用展开失败: {e}\n"
+            return StepOutcome({"status": "error", "msg": str(e)}, next_prompt="\n")
+        
+        # ✅ Bug修复1: prepend 使用 with 语句
+        try:
             if mode == "prepend":
-                old = open(path, 'r', encoding="utf-8").read() if os.path.exists(path) else ""
-                open(path, 'w', encoding="utf-8").write(new_content + old)
+                if os.path.exists(path):
+                    with open(path, 'r', encoding="utf-8") as f:
+                        old = f.read()
+                else:
+                    old = ""
+                with open(path, 'w', encoding="utf-8") as f:
+                    f.write(new_content + old)
             else:
                 with open(path, 'a' if mode == "append" else 'w', encoding="utf-8") as f: f.write(new_content)
             yield f"[Status] ✅ {mode.capitalize()} 成功 ({len(new_content)} bytes)\n"
