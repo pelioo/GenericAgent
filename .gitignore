@@ -113,6 +113,9 @@ reflect/*
 # Universal: never track __pycache__ anywhere
 **/__pycache__/
 
+# Claude Code 
+.claude/
+
 # 排除文件夹 
 .snapshots/
 python/
@@ -129,7 +132,7 @@ python/
 
 !memory/react_cognitive_loop_sop.md
 
-## 自我改进 sop
+## 自我改进与进化 sop
 !memory/self_improving_sop.md
+!memory/self_evolution_sop.md
 
-.claude/
