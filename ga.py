@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from agent_loop import BaseHandler, StepOutcome, json_default
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-def code_run(code, code_type="python", timeout=60, cwd=None, code_cwd=None, stop_signal=[]):
+def code_run(code, code_type="python", timeout=60, cwd=None, code_cwd=None, stop_signal=None):
     """代码执行器
     python: 运行复杂的 .py 脚本（文件模式）
     powershell/bash: 运行单行指令（命令模式）
@@ -59,7 +59,7 @@ def code_run(code, code_type="python", timeout=60, cwd=None, code_cwd=None, stop
 
         while t.is_alive():
             istimeout = time.time() - start_t > timeout
-            if istimeout or len(stop_signal) > 0:
+            if istimeout or stop_signal:
                 process.kill()
                 print("[Debug] Process killed due to timeout or stop signal.")
                 if istimeout: full_stdout.append("\n[Timeout Error] 超时强制终止")
@@ -284,12 +284,13 @@ class GenericAgentHandler(BaseHandler):
         if not code:
             code = self._extract_code_block(response, code_type)
             if not code: return StepOutcome("[Error] Code missing. Must use reply code block or 'script' arg.", next_prompt="\n")
-        timeout = args.get("timeout", 60)
+        try: timeout = int(args.get("timeout", 60))
+        except: timeout = 60
         raw_path = os.path.join(self.cwd, args.get("cwd", './'))
         cwd = os.path.normpath(os.path.abspath(raw_path))
         code_cwd = os.path.normpath(self.cwd)
         if code_type == 'python' and args.get("inline_eval"):
-            ns = {'handler': self, 'parent': self.parent}
+            ns = {'handler':self, 'parent':self.parent, 'history':json.dumps(self.parent.llmclient.backend.history)}
             old_cwd = os.getcwd()
             try:
                 os.chdir(cwd)
@@ -522,7 +523,7 @@ class GenericAgentHandler(BaseHandler):
 ''' + get_global_memory()
         yield "[Info] Start distilling good memory for long-term storage.\n"
         path = './memory/memory_management_sop.md'
-        if os.path.exists(path): result = '自动读取L0内容：\n' + file_read(path, show_linenos=False)
+        if os.path.exists(path): result = 'This is L0:\n' + file_read(path, show_linenos=False)
         else: result = "Memory Management SOP not found. Do not update memory."
         return StepOutcome(result, next_prompt=prompt)
 
