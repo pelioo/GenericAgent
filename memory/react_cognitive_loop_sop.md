@@ -174,6 +174,7 @@ Emotional + Meta-Analysis
    - 简单任务可简化流程，但保留核心检查点
    - 复杂任务严格执行全部阶段
 4. **记录要求**：关键决策点必须记录原因
+5. **[Self-Improving联动]** Stage5强制检查corrections.md（最近3条），有相关纠正立即记录
 
 ---
 
