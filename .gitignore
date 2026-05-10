@@ -142,3 +142,4 @@ python/
 
 # 排除的文件 
 docs/bug.md
+.aider*
