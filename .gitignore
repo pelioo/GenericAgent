@@ -139,3 +139,6 @@ python/
 ## Everything 文件搜索 CLi 内置 
 !memory/everything_search_sop.md
 !memory/everything_search/
+
+# 排除的文件 
+docs/bug.md
