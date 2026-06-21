@@ -21,6 +21,8 @@ try:
 	import cv2
 except: pass
 
+ctypes.windll.user32.SetProcessDPIAware()
+
 _hdc = ctypes.windll.user32.GetDC(0)
 swidth = ctypes.windll.gdi32.GetDeviceCaps(_hdc, 118)   # DESKTOPHORZRES (物理)
 sheight = ctypes.windll.gdi32.GetDeviceCaps(_hdc, 117)   # DESKTOPVERTRES
@@ -100,7 +102,11 @@ activate = Activate
 def GrabWindow(hwnd):
 	if isinstance(hwnd, str): hwnd = win32gui.FindWindow(None, hwnd); assert hwnd, f'窗口未找到'
 	Activate(hwnd); time.sleep(0.25)
-	bbox = tuple(int(v / dpi_scale) for v in win32gui.GetWindowRect(hwnd))
+	# 只截客户区(不含标题栏边框), 与GrabWindowBg一致 → 截图内坐标统一用ClientToScreen原点做偏移
+	l, t = win32gui.ClientToScreen(hwnd, (0, 0))
+	cr = win32gui.GetClientRect(hwnd)  # (0,0,w,h)
+	bbox = (l, t, l + cr[2], t + cr[3])
+	bbox = tuple(int(v / dpi_scale) for v in bbox)
 	return ImageGrab.grab(bbox)
 
 def GrabWindowBg(hwnd_or_name, timeout=5):
@@ -154,9 +160,9 @@ def FindBlock(fn, wrect=None, verbose=0, threshold=0.8):
 	obj = (oj + wrect[0] + tsw//2, oi + wrect[1] + tsh//2)
 	if verbose:
 		print(f'Max match: {max_val:.4f} at ({oj}, {oi}) cost: {time.process_time() - tic:.3f}s')
-		sscr = scr.crop([oj, oi, oj+tsw, oi+tsh])
-		sscr.show()
-	return obj, max_val > threshold
+		#sscr = scr.crop([oj, oi, oj+tsw, oi+tsh])
+		#sscr.show()
+	return obj, max_val
 
 def ScreenCapAt(x, y, r=100):
 	"""物理坐标(x,y)为中心±r的屏幕截图 → PIL Image"""
