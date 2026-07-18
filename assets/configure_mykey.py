@@ -88,7 +88,7 @@ LLM_PROVIDERS = [
         'type': 'native_oai',
         'template': {
             'name': 'deepseek', 'apikey': 'sk-<your-deepseek-key>',
-            'apibase': 'https://api.deepseek.com', 'model': 'deepseek-v4-flash',
+            'apibase': 'https://api.deepseek.com', 'model': 'deepseek-v4-pro',
             'api_mode': 'chat_completions', 'reasoning_effort': 'high',
         },
         'key_hint': '在 https://platform.deepseek.com/api_keys 获取',
@@ -126,11 +126,11 @@ LLM_PROVIDERS = [
         'template': {
             'name': 'qwen', 'apikey': 'sk-<your-dashscope-key>',
             'apibase': 'https://dashscope.aliyuncs.com/compatible-mode/v1',
-            'model': 'qwen3.5-plus',
+            'model': 'qwen3.6-max-preview',
             'api_mode': 'chat_completions',
         },
         'key_hint': '在 https://bailian.console.aliyun.com/ 获取 API Key',
-        'model_choices': ['qwen3.5-plus', 'qwen3-coder-plus'],
+        'model_choices': ['qwen3.6-max-preview', 'qwen3.5-plus', 'qwen3-coder-plus'],
         'extra_fields': [
             {
                 'key': '_endpoint', 'label': '选择端点',
@@ -732,7 +732,7 @@ def _configure_advanced(provider, cfg):
     proxy = ask_input("HTTP 代理地址 (proxy)", default='', hint='如 http://127.0.0.1:2082，留空跳过')
     if proxy:
         cfg['proxy'] = proxy
-    cw = ask_input("上下文窗口阈值 (context_win)", default='', hint='NativeClaude 默认 28000，其他默认 24000')
+    cw = ask_input("上下文窗口阈值 (context_win)", default='', hint='默认 30000，DeepSeek 默认 70000；联动压缩与工具上限')
     if cw:
         cfg['context_win'] = int(cw)
     if cfg.get('thinking_type') == 'enabled':

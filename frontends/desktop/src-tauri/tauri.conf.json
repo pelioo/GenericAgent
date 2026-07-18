@@ -1,6 +1,6 @@
 {
   "productName": "GenericAgent",
-  "version": "0.1.0",
+  "version": "0.1.8",
   "identifier": "com.genericagent.app",
   "build": {
     "frontendDist": "../static"
@@ -17,6 +17,7 @@
         "width": 1280,
         "height": 800,
         "resizable": true,
+        "maximized": false,
         "visible": false,
         "url": "loading.html"
       },
